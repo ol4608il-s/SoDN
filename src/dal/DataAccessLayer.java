@@ -14,6 +14,8 @@ public class DataAccessLayer {
 	public String Course;
 	public String Student;
 
+	
+	// method finding student and looking in database
 	public String findStudent(String studentID) throws SQLException {
 
 		Connection con1 = DatabaseConnect.newConnection();
@@ -40,6 +42,7 @@ public class DataAccessLayer {
 
 	}
 
+	// method finding course and looking in database
 	public String findCourse(String courseID) throws SQLException {
 
 		Connection con1 = DatabaseConnect.newConnection();
@@ -66,6 +69,7 @@ public class DataAccessLayer {
 		return null;
 	}
 
+	// method finding all students on certain course and looking in database
 	public <StudentsOnCourse> ArrayList<StudentsOnCourse> findStudentsOnCourse(String courseID) throws SQLException {
 
 		ArrayList<StudentsOnCourse> SOC = new ArrayList<StudentsOnCourse>();
@@ -87,6 +91,7 @@ public class DataAccessLayer {
 
 	}
 
+	// method add student in database
 	public String addStudent(String studentID, String name) throws SQLException {
 
 		Connection con1 = DatabaseConnect.newConnection();
@@ -111,6 +116,7 @@ public class DataAccessLayer {
 		return null;
 	}
 
+	// method add course in database
 	public String addCourse(String courseID, String courseName, String credits) throws SQLException {
 
 		Connection con1 = DatabaseConnect.newConnection();
@@ -138,6 +144,7 @@ public class DataAccessLayer {
 
 	}
 
+	// method add student to a course in database
 	public String addStudies(String courseID, String studentID) throws SQLException {
 
 		Connection con1 = DatabaseConnect.newConnection();
@@ -167,6 +174,7 @@ public class DataAccessLayer {
 
 	}
 
+	// method add grade to student and putting student in hasstudied from studies in database
 	public String addGrade(String courseID, String studentID, String grade) throws SQLException {
 
 		Connection con1 = DatabaseConnect.newConnection();
@@ -187,13 +195,14 @@ public class DataAccessLayer {
 				String studentIDRS = rs.getString(2);
 				String gradeRS = rs.getString(3);
 
-				return courseIDRS + " " + studentIDRS + " " + gradeRS;
+				return "Student: " + studentIDRS + " on course: " + courseIDRS + " has been given the grade: " + gradeRS;
 			}
 		}
 
 		return null;
 	}
 
+	// method finding certain student on certain course in database
 	public String FindStudentCourse(String courseID, String studentID) throws SQLException {
 
 		Connection con1 = DatabaseConnect.newConnection();
@@ -217,6 +226,7 @@ public class DataAccessLayer {
 		return null;
 	}
 
+	// method delete student in database
 	public String DeleteStudent(String studentID) throws SQLException {
 
 		Connection con1 = DatabaseConnect.newConnection();
@@ -232,6 +242,7 @@ public class DataAccessLayer {
 
 	}
 
+	// method delete course in database
 	public String DeleteCourse(String courseID) throws SQLException {
 
 		Connection con1 = DatabaseConnect.newConnection();
@@ -246,6 +257,7 @@ public class DataAccessLayer {
 		}
 	}
 
+	// method delete student from studies in database
 	public String DeleteStudentFromCourse(String studentID, String courseID) throws SQLException {
 
 		Connection con1 = DatabaseConnect.newConnection();
@@ -269,6 +281,7 @@ public class DataAccessLayer {
 		return null;
 	}
 
+	// method counting the percentage of A on a certain course in hasstudied
 	public String CountPercentA(String courseID) throws SQLException {
 
 		Connection con1 = DatabaseConnect.newConnection();

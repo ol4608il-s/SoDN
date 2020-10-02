@@ -70,6 +70,12 @@ public class ApplicationController {
 	private Button btnPercentA;
 	@FXML
 	private Button btnFindStudentsOnCourse;
+	@FXML
+	private TextField txtCourseID1;
+	@FXML
+	private TextField studentIDTextField1;
+	@FXML
+	private Label lblStatusManageCourse;
 	DataAccessLayer dal = new DataAccessLayer();
 
 	public String HasStudied;
@@ -82,7 +88,7 @@ public class ApplicationController {
 	public static int primaryKeyViolation = 2627;
 	public static int dataBaseOffline = 17142;
 
-	@FXML
+	// Method for adding student through controller
 	public void btnAddStudent_Click(ActionEvent event) {
 		try {
 			String studentID = studentIDTextField.getText();
@@ -126,6 +132,7 @@ public class ApplicationController {
 
 	}
 
+	// Method for adding course through controller
 	public void btnAddCourse_Click(ActionEvent event2) {
 		try {
 			String courseID = txtCourseID.getText();
@@ -149,8 +156,7 @@ public class ApplicationController {
 				courseName = courseName.substring(0, 1).toUpperCase() + courseName.substring(1);
 				courseID = courseID.substring(0, 1).toUpperCase() + courseID.substring(1);
 
-				lblStatusStudent
-						.setText("Course " + dal.addCourse(courseID, courseName, credits) + " has been added.");
+				lblStatusCourse.setText("Course " + dal.addCourse(courseID, courseName, credits) + " has been added.");
 				studentIDTextField.clear();
 				studentNameTextField.clear();
 
@@ -160,17 +166,18 @@ public class ApplicationController {
 				lblStatusCourse.setText("This courseID is already in use, please try another one");
 			System.out.println(e2.getMessage() + " SQL");
 			if (e2.getErrorCode() == dataBaseOffline)
-				lblStatusStudent.setText("The database is offline.");
+				lblStatusCourse.setText("The database is offline.");
 		} catch (NullPointerException e) {
-			lblStatusStudent.setText(e.getMessage() + " NullPointer");
+			lblStatusCourse.setText(e.getMessage() + " NullPointer");
 
 		} catch (Exception e1) {
-			lblStatusStudent.setText(e1.getMessage() + " Exception");
+			lblStatusCourse.setText(e1.getMessage() + " Exception");
 
 		}
 
 	}
 
+	// Method for finding student through controller
 	public String btnFindStudent_Click(ActionEvent event1) {
 
 		txtResponses.clear();
@@ -199,6 +206,7 @@ public class ApplicationController {
 		return null;
 	}
 
+	// Method for finding course through controller
 	public String btnFindCourse_Click(ActionEvent event3) {
 
 		txtResponses.clear();
@@ -218,16 +226,17 @@ public class ApplicationController {
 
 			catch (SQLException e2) {
 				if (e2.getErrorCode() == dataBaseOffline)
-					lblStatusStudent.setText("The database is offline.");
+					lblStatusCourse.setText("The database is offline.");
 			} catch (NullPointerException e) {
 				System.out.println("Catch1 " + e.getMessage());
 			} catch (Exception e1) {
-				lblStatusStudent.setText(e1.getMessage() + " Exception");
+				lblStatusCourse.setText(e1.getMessage() + " Exception");
 			}
 		}
 		return null;
 	}
 
+	// Method for finding all students in certain course through controller
 	public void btnFindStudentsOnCourse_Click(ActionEvent event8) throws SQLException {
 
 		String courseID = txtCourseID.getText();
@@ -235,13 +244,13 @@ public class ApplicationController {
 		try {
 			// System.out.println(dal.findStudentsOnCourse(courseID));
 
-			String[] SOC = dal.findStudentsOnCourse(courseID).toArray(new String[0]);
+			String[] studentInformation = dal.findStudentsOnCourse(courseID).toArray(new String[0]);
 			txtResponses.clear();
-			for (int i = 0; i < SOC.length; i += 3) {
+			for (int i = 0; i < studentInformation.length; i += 3) {
 				String[] hasStudiedRow = new String[3];
-				hasStudiedRow[0] = SOC[i];
-				hasStudiedRow[1] = SOC[i + 1];
-				hasStudiedRow[2] = SOC[i + 2];
+				hasStudiedRow[0] = studentInformation[i];
+				hasStudiedRow[1] = studentInformation[i + 1];
+				hasStudiedRow[2] = studentInformation[i + 2];
 
 				txtResponses.appendText(hasStudiedRow[0] + " " + hasStudiedRow[1] + " " + hasStudiedRow[2] + "\n");
 
@@ -250,26 +259,27 @@ public class ApplicationController {
 
 		catch (SQLException e2) {
 			if (e2.getErrorCode() == dataBaseOffline)
-				lblStatusStudent.setText("The database is offline.");
+				lblStatusCourse.setText("The database is offline.");
 		} catch (NullPointerException e) {
 			System.out.println("Catch1 " + e.getMessage());
 		} catch (Exception e1) {
-			lblStatusStudent.setText(e1.getMessage() + " Exception");
+			lblStatusCourse.setText(e1.getMessage() + " Exception");
 		}
 
 	}
 
+	// Method for adding student to course through controller
 	public void btnAddStudentToCourse_Click(ActionEvent event4) {
 		try {
 			String courseID = txtStudiesCourseID.getText();
 			String studentID = txtStudiesStudentID.getText();
 
 			if (txtStudiesCourseID.getText().isEmpty() && txtStudiesStudentID.getText().isEmpty()) {
-				lblStatusStudent.setText("You didn't set a Student ID and name");
+				lblStatusManageCourse.setText("You didn't set a Student ID and name");
 			} else if (txtStudiesCourseID.getText().isEmpty()) {
-				lblStatusStudent.setText("You didn't set students unique ID");
+				lblStatusManageCourse.setText("You didn't set students unique ID");
 			} else if (txtStudiesStudentID.getText().isEmpty()) {
-				lblStatusStudent.setText("You didn't set students name");
+				lblStatusManageCourse.setText("You didn't set students name");
 			}
 			// if (!studentID.matches("[0-9]+")) {
 			// System.out.print("please only use numbers.");
@@ -282,20 +292,22 @@ public class ApplicationController {
 
 			}
 
-			lblStatusStudent.setText("Course-ID: " + courseID + " with studentID: " + studentID + " has been added");
+			lblStatusManageCourse.setText("Student: " + studentID + " has been added to course: " + courseID + ".");
 			txtCourseID.clear();
 			txtCourseName.clear();
 		} catch (SQLException e2) {
 			if (e2.getErrorCode() == dataBaseOffline)
-				lblStatusStudent.setText("The database is offline.");
+				lblStatusManageCourse.setText("The database is offline.");
 		} catch (NullPointerException e) {
 			System.out.println("Catch1 " + e.getMessage());
 		} catch (Exception e1) {
-			lblStatusStudent.setText(e1.getMessage() + " Exception");
+			lblStatusManageCourse.setText(e1.getMessage() + " Exception");
 		}
 
 	}
 
+	// Method for adding grade to student and moving them from studies to HasStudied
+	// through controller
 	public void btnAddGrade_Click(ActionEvent event5) {
 		try {
 			String courseID = txtStudiesCourseID.getText();
@@ -304,17 +316,16 @@ public class ApplicationController {
 
 			if (txtStudiesCourseID.getText().isEmpty() && txtStudiesStudentID.getText().isEmpty()
 					&& txtGrade.getText().isEmpty()) {
-				lblStatusStudent.setText("You didn't set a Student ID, name and grade");
+				lblStatusManageCourse.setText("You didn't set a Student ID, name and grade");
 			} else if (txtStudiesCourseID.getText().isEmpty()) {
-				lblStatusStudent.setText("You didn't set students unique ID");
+				lblStatusManageCourse.setText("You didn't set a courseID");
 			} else if (txtStudiesStudentID.getText().isEmpty()) {
-				lblStatusStudent.setText("You didn't set students name");
+				lblStatusManageCourse.setText("You didn't set a studentID");
 			} else if (txtGrade.getText().isEmpty()) {
-				lblStatusStudent.setText("You didn't set a grade");
+				lblStatusManageCourse.setText("You didn't set a grade");
+			} else if (!studentID.matches("[S0-9]+")) {
+				lblStatusManageCourse.setText("please use a valid studentID (S+number)");
 			}
-			// if (!studentID.matches("[0-9]+")) {
-			// System.out.print("please only use numbers.");
-			// }
 
 			else {
 				courseID = courseID.substring(0, 1).toUpperCase() + courseID.substring(1);
@@ -325,11 +336,9 @@ public class ApplicationController {
 
 		catch (SQLException e2) {
 			if (e2.getErrorCode() == dataBaseOffline)
-				lblStatusStudent.setText("The database is offline.");
-		} catch (NullPointerException e) {
-			System.out.println("Catch1 " + e.getMessage());
+				lblStatusManageCourse.setText("The database is offline.");
 		} catch (Exception e1) {
-			lblStatusStudent.setText(e1.getMessage() + " Exception");
+			lblStatusManageCourse.setText(e1.getMessage() + " Exception");
 		}
 
 		txtCourseID.clear();
@@ -338,15 +347,16 @@ public class ApplicationController {
 
 	}
 
+	// Method for finding certain student on certain course through controller
 	public void btnFindStudentCourse_Click(ActionEvent event3) {
 
 		txtResponses.clear();
 
 		try {
-			String courseID = txtCourseID.getText();
-			String studentID = studentIDTextField.getText();
+			String courseID = txtCourseID1.getText();
+			String studentID = studentIDTextField1.getText();
 
-			if (txtCourseID.getText().equals("") && studentIDTextField.getText().contentEquals("")) {
+			if (txtCourseID1.getText().equals("") && studentIDTextField1.getText().contentEquals("")) {
 				System.out.print("Please enter a courseID and studentID");
 			}
 
@@ -357,14 +367,15 @@ public class ApplicationController {
 			}
 		} catch (SQLException e2) {
 			if (e2.getErrorCode() == dataBaseOffline)
-				lblStatusStudent.setText("The database is offline.");
+				lblStatusManageCourse.setText("The database is offline.");
 		} catch (NullPointerException e) {
 			System.out.println("Catch1 " + e.getMessage());
 		} catch (Exception e1) {
-			lblStatusStudent.setText(e1.getMessage() + " Exception");
+			lblStatusManageCourse.setText(e1.getMessage() + " Exception");
 		}
 	}
 
+	// Method for deleting student through controller
 	public void btnDeleteStudent_Click(ActionEvent Event4) {
 		txtResponses.clear();
 
@@ -379,7 +390,7 @@ public class ApplicationController {
 			else {
 
 				dal.DeleteStudent(studentID);
-				
+
 			}
 		} catch (SQLException e1) {
 			if (e1.getErrorCode() == dataBaseOffline)
@@ -392,58 +403,58 @@ public class ApplicationController {
 
 	}
 
+	// Method for deleting course through controller
 	public void btnDeleteCourse_Click(ActionEvent Event5) {
 		txtResponses.clear();
-	
-		try	{
-		
-		String courseID = txtCourseID.getText();
 
-		if (txtCourseID.getText().contentEquals("")) {
-			System.out.print("Please enter a courseID");
-		} 
-		
-		else {
-			
-			dal.DeleteCourse(courseID);
-			
+		try {
+
+			String courseID = txtCourseID.getText();
+
+			if (txtCourseID.getText().contentEquals("")) {
+				System.out.print("Please enter a courseID");
 			}
-			} catch (SQLException e1) {
-					if (e1.getErrorCode() == dataBaseOffline)
-						lblStatusStudent.setText("The database is offline.");
-			} catch (Exception e2) {
-					lblStatusStudent.setText(e2.getMessage() + " Exception");
-			} 
-	}	
 
-		
-	
+			else {
 
+				dal.DeleteCourse(courseID);
+
+			}
+		} catch (SQLException e1) {
+			if (e1.getErrorCode() == dataBaseOffline)
+				lblStatusCourse.setText("The database is offline.");
+		} catch (Exception e2) {
+			lblStatusCourse.setText(e2.getMessage() + " Exception");
+		}
+	}
+
+	// Method for deleting student from course through controller
 	public void btnDeleteStudentFromCourse_Click(ActionEvent Event6) {
 		txtResponses.clear();
-		
-		try	{
-		
-		String courseID = txtStudiesCourseID.getText();
-		String studentID = txtStudiesStudentID.getText();
 
-		if (txtStudiesCourseID.getText().equals("") && txtStudiesStudentID.getText().contentEquals("")) {
-			System.out.print("Please enter a courseID and studentID");
-		} else {
-			
-			txtResponses.setText(dal.DeleteStudentFromCourse(studentID, courseID));
-			
-			} 
+		try {
+
+			String courseID = txtStudiesCourseID.getText();
+			String studentID = txtStudiesStudentID.getText();
+
+			if (txtStudiesCourseID.getText().equals("") && txtStudiesStudentID.getText().contentEquals("")) {
+				System.out.print("Please enter a courseID and studentID");
+			} else {
+
+				txtResponses.setText(dal.DeleteStudentFromCourse(studentID, courseID));
+
+			}
 		} catch (SQLException e1) {
-				if (e1.getErrorCode() == dataBaseOffline)
-					lblStatusStudent.setText("The database is offline.");
+			if (e1.getErrorCode() == dataBaseOffline)
+				lblStatusManageCourse.setText("The database is offline.");
 		} catch (Exception e2) {
-				lblStatusStudent.setText(e2.getMessage() + " Exception");
+			lblStatusManageCourse.setText(e2.getMessage() + " Exception");
 		}
-				
-	}
-	
 
+	}
+
+	// Method for counting percentage of all A´s on certain course through
+	// controller
 	public void btnCountPercentA_Click(ActionEvent event7) {
 
 		txtResponses.clear();
@@ -458,9 +469,11 @@ public class ApplicationController {
 			else {
 
 				txtResponses.setText(dal.CountPercentA(courseID));
-						
-	}	} catch (SQLException e1) {
-		if (e1.getErrorCode() == dataBaseOffline)
-			lblStatusStudent.setText("The database is offline.");
-}	}
+
+			}
+		} catch (SQLException e1) {
+			if (e1.getErrorCode() == dataBaseOffline)
+				lblStatusCourse.setText("The database is offline.");
+		}
+	}
 }

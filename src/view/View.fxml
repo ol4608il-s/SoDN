@@ -10,7 +10,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ApplicationController">
    <children>
-      <AnchorPane layoutY="-2.0" prefHeight="511.0" prefWidth="1029.0">
+      <AnchorPane layoutX="-6.0" layoutY="-1.0" prefHeight="511.0" prefWidth="1029.0">
          <children>
             <Button fx:id="addStudentButton" layoutX="25.0" layoutY="136.0" mnemonicParsing="false" onAction="#btnAddStudent_Click" prefHeight="25.0" prefWidth="86.0" text="Add student" />
             <TextField fx:id="studentNameTextField" layoutX="25.0" layoutY="82.0" promptText="First name" />
@@ -25,8 +25,8 @@
                   <Font size="28.0" />
                </font>
             </Label>
-            <Button fx:id="findStudentButton" layoutX="131.0" layoutY="136.0" mnemonicParsing="false" onAction="#btnFindStudent_Click" prefHeight="25.0" prefWidth="86.0" text="Find student" />
-            <TextField fx:id="studentIDTextField" layoutX="220.0" layoutY="82.0" prefHeight="25.0" prefWidth="86.0" promptText="Student-ID" />
+            <Button fx:id="findStudentButton" layoutX="258.0" layoutY="136.0" mnemonicParsing="false" onAction="#btnFindStudent_Click" prefHeight="25.0" prefWidth="86.0" text="Find student" />
+            <TextField fx:id="studentIDTextField" layoutX="258.0" layoutY="82.0" prefHeight="25.0" prefWidth="86.0" promptText="Student-ID" />
             <Label layoutX="162.0" layoutY="86.0" text="*" textFill="RED" />
             <Label layoutX="25.0" layoutY="64.0" text="Enter first name">
                <font>
@@ -34,7 +34,7 @@
                </font>
             </Label>
             <Separator layoutX="529.0" layoutY="271.0" prefHeight="5.0" prefWidth="443.0" />
-            <Label layoutX="674.0" layoutY="287.0" text="Add student to course">
+            <Label layoutX="674.0" layoutY="287.0" text="Manage student on course">
                <font>
                   <Font size="18.0" />
                </font>
@@ -47,42 +47,75 @@
             <TextField fx:id="txtStudiesCourseID" layoutX="512.0" layoutY="334.0" promptText="Course-ID" />
             <TextField fx:id="txtStudiesStudentID" layoutX="710.0" layoutY="334.0" prefHeight="25.0" prefWidth="86.0" promptText="Student-ID" />
             <Button fx:id="btnAddStudentToCourse" layoutX="515.0" layoutY="377.0" mnemonicParsing="false" onAction="#btnAddStudentToCourse_Click" text="Add student to course" />
-            <Button fx:id="btnAddCourse" layoutX="670.0" layoutY="190.0" mnemonicParsing="false" onAction="#btnAddCourse_Click" prefHeight="25.0" prefWidth="98.0" text="Add course" />
+            <Button fx:id="btnAddCourse" layoutX="527.0" layoutY="190.0" mnemonicParsing="false" onAction="#btnAddCourse_Click" prefHeight="25.0" prefWidth="98.0" text="Add course" />
             <TextField fx:id="txtCourseName" layoutX="527.0" layoutY="116.0" promptText="Course name" />
-            <Button fx:id="findCourseButton" layoutX="896.0" layoutY="189.0" mnemonicParsing="false" onAction="#btnFindCourse_Click" prefHeight="25.0" prefWidth="98.0" text="Find Course" />
+            <Button fx:id="findCourseButton" layoutX="771.0" layoutY="190.0" mnemonicParsing="false" onAction="#btnFindCourse_Click" prefHeight="25.0" prefWidth="98.0" text="Find Course" />
             <TextField fx:id="txtCourseID" layoutX="719.0" layoutY="116.0" prefHeight="25.0" prefWidth="86.0" promptText="Course-ID" />
-            <Label layoutX="560.0" layoutY="96.0" text="Enter Course name">
+            <Label layoutX="527.0" layoutY="100.0" text="Enter Course name">
                <font>
                   <Font size="10.0" />
                </font>
             </Label>
-            <Label layoutX="718.0" layoutY="319.0" text="Enter Student-ID">
+            <Label layoutX="712.0" layoutY="319.0" text="Enter Student-ID">
                <font>
                   <Font size="10.0" />
                </font>
             </Label>
             <Button fx:id="btnAddGrade" layoutX="858.0" layoutY="377.0" mnemonicParsing="false" onAction="#btnAddGrade_Click" text="Add grade" />
-            <TextField fx:id="txtGrade" layoutX="850.0" layoutY="331.0" prefHeight="25.0" prefWidth="86.0" promptText="Grade" />
-            <Label layoutX="858.0" layoutY="312.0" text="Enter grade F-A">
+            <TextField fx:id="txtGrade" layoutX="850.0" layoutY="334.0" prefHeight="25.0" prefWidth="86.0" promptText="Grade" />
+            <Label layoutX="852.0" layoutY="319.0" text="Enter grade F-A">
                <font>
                   <Font size="10.0" />
                </font>
             </Label>
-            <TextArea fx:id="txtResponses" layoutX="25.0" layoutY="304.0" prefHeight="147.0" prefWidth="391.0" promptText="Responses" />
+            <TextArea fx:id="txtResponses" editable="false" layoutX="25.0" layoutY="304.0" prefHeight="147.0" prefWidth="391.0" promptText="Information will show up here..." />
             <Label fx:id="lblStatusStudent" layoutX="14.0" layoutY="182.0" prefHeight="40.0" prefWidth="364.0" />
-            <Label fx:id="lblStatusCourse" layoutX="529.0" layoutY="128.0" prefHeight="40.0" prefWidth="364.0" />
-            <Label layoutX="897.0" layoutY="175.0" text="Search with Course-ID">
+            <Label fx:id="lblStatusCourse" layoutX="529.0" layoutY="143.0" prefHeight="40.0" prefWidth="364.0" />
+            <Label layoutX="771.0" layoutY="175.0" text="Search by Course-ID">
                <font>
                   <Font size="10.0" />
                </font>
             </Label>
             <Button fx:id="btnFindStudentCourse" layoutX="269.0" layoutY="463.0" mnemonicParsing="false" onAction="#btnFindStudentCourse_Click" prefHeight="25.0" prefWidth="149.0" text="Find Student &amp; Course" />
-            <Button fx:id="btnDeleteStudent" layoutX="243.0" layoutY="136.0" mnemonicParsing="false" onAction="#btnDeleteStudent_Click" prefHeight="25.0" prefWidth="104.0" text="Delete Student" />
-            <Button fx:id="btnDeleteCourse" layoutX="783.0" layoutY="190.0" mnemonicParsing="false" onAction="#btnDeleteCourse_Click" prefHeight="25.0" prefWidth="98.0" text="Delete Course" />
+            <Button fx:id="btnDeleteStudent" layoutX="135.0" layoutY="136.0" mnemonicParsing="false" onAction="#btnDeleteStudent_Click" prefHeight="25.0" prefWidth="104.0" text="Delete Student" />
+            <Button fx:id="btnDeleteCourse" layoutX="649.0" layoutY="190.0" mnemonicParsing="false" onAction="#btnDeleteCourse_Click" prefHeight="25.0" prefWidth="98.0" text="Delete Course" />
             <Button fx:id="btnDeleteStudentFromCourse" layoutX="666.0" layoutY="377.0" mnemonicParsing="false" onAction="#btnDeleteStudentFromCourse_Click" text="Delete Student From Course" />
-            <TextField fx:id="txtCredits" layoutX="850.0" layoutY="116.0" prefHeight="25.0" prefWidth="86.0" promptText="Credit" />
-            <Button fx:id="btnPercentA" layoutX="968.0" layoutY="116.0" mnemonicParsing="false" onAction="#btnCountPercentA_Click" prefHeight="25.0" prefWidth="53.0" text="A%" />
-            <Button fx:id="btnFindStudentsOnCourse" layoutX="529.0" layoutY="189.0" mnemonicParsing="false" onAction="#btnFindStudentsOnCourse_Click" prefHeight="25.0" prefWidth="128.0" text="Find Studens On Course" />
+            <TextField fx:id="txtCredits" layoutX="850.0" layoutY="116.0" prefHeight="25.0" prefWidth="86.0" promptText="Credits" />
+            <Button fx:id="btnPercentA" layoutX="706.0" layoutY="231.0" mnemonicParsing="false" onAction="#btnCountPercentA_Click" prefHeight="25.0" prefWidth="111.0" text="A% on a course" />
+            <Button fx:id="btnFindStudentsOnCourse" layoutX="529.0" layoutY="231.0" mnemonicParsing="false" onAction="#btnFindStudentsOnCourse_Click" prefHeight="25.0" prefWidth="149.0" text="Find Studens On Course" />
+            <TextField fx:id="studentIDTextField1" layoutX="144.0" layoutY="463.0" prefHeight="25.0" prefWidth="86.0" promptText="Student-ID" />
+            <TextField fx:id="txtCourseID1" layoutX="25.0" layoutY="463.0" prefHeight="25.0" prefWidth="86.0" promptText="Course-ID" />
+            <Label layoutX="258.0" layoutY="121.0" text="Search by Student-ID">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Label layoutX="704.0" layoutY="215.0" text="Search by Course-ID">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Label layoutX="258.0" layoutY="64.0" text="Enter Student-ID">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Label layoutX="718.0" layoutY="100.0" text="Enter Course-ID">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Label layoutX="852.0" layoutY="100.0" text="Enter number of credits">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Label layoutX="527.0" layoutY="215.0" text="Search by Course-ID">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Label fx:id="lblStatusManageCourse" layoutX="508.0" layoutY="411.0" prefHeight="40.0" prefWidth="364.0" />
          </children>
       </AnchorPane>
    </children>
