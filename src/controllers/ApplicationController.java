@@ -78,9 +78,6 @@ public class ApplicationController {
 	private Label lblStatusManageCourse;
 	DataAccessLayer dal = new DataAccessLayer();
 
-	public String HasStudied;
-	public String Course;
-	public String Student;
 	static String url = "jdbc:sqlserver://localhost:1433;database=test";
 	static String user = "fri";
 	static String password = "oli";
