@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,7 +18,8 @@ import javafx.scene.control.TextField;
 import model.Course;
 import model.HasStudied;
 import java.util.ArrayList;
-
+import dal.DataAccessLayer;
+import dal.DatabaseConnect;
 
 public class ApplicationController {
 	@FXML
@@ -56,7 +58,19 @@ public class ApplicationController {
 	private TextArea txtResponses;
 	@FXML
 	private Button btnFindStudentCourse;
-	// DataAccessLayer dal = new DataAccessLayer();
+	@FXML
+	private Button btnDeleteStudent;
+	@FXML
+	private Button btnDeleteCourse;
+	@FXML
+	private Button btnDeleteStudentFromCourse;
+	@FXML
+	private TextField txtCredits;
+	@FXML
+	private Button btnPercentA;
+	@FXML
+	private Button btnFindStudentsOnCourse;
+	DataAccessLayer dal = new DataAccessLayer();
 
 	public String HasStudied;
 	public String Course;
@@ -64,6 +78,9 @@ public class ApplicationController {
 	static String url = "jdbc:sqlserver://localhost:1433;database=test";
 	static String user = "fri";
 	static String password = "oli";
+
+	public static int primaryKeyViolation = 2627;
+	public static int dataBaseOffline = 17142;
 
 	@FXML
 	public void btnAddStudent_Click(ActionEvent event) {
@@ -80,199 +97,166 @@ public class ApplicationController {
 			} else if (!name.matches("[a-z A-Z]+")) {
 				System.out.print("Invalid name, please only use letters.");
 			}
-			 if (!studentID.matches("[S0-9]+")) {
-			 System.out.print("please only use capital ¨S¨ + studentnumber.");
-			 }
+			if (!studentID.matches("[S0-9]+")) {
+				System.out.print("please only use capital ¨S¨ + a number/s.");
+			}
 
 			else {
 
 				name = name.substring(0, 1).toUpperCase() + name.substring(1);
 				studentID = studentID.substring(0, 1).toUpperCase() + studentID.substring(1);
 
-				try {
-
-					Connection con = DriverManager.getConnection(url, user, password);
-					String query = "INSERT INTO Student (studentID, name) VALUES(?,?);"
-							+ "SELECT * FROM Student WHERE studentID =?";
-
-					try (PreparedStatement ps = con.prepareStatement(query)) {
-
-						ps.setString(1, studentID);
-						ps.setString(2, name);
-						ps.setString(3, studentID);
-						ResultSet rs = ps.executeQuery();
-
-						while (rs.next()) {
-							lblStatusStudent.setText("Student: " + rs.getString(2) + " with student ID: "
-									+ rs.getString(1) + " has been added");
-						}
-					} catch (SQLException e1) {
-
-						System.out.println("Catch2 " + e1.getMessage());
-
-					}
-
-				} catch (SQLException e1) {
-
-					System.out.println("Catch2 " + e1.getMessage());
-
-				}
+				lblStatusStudent.setText("Student " + dal.addStudent(studentID, name) + " has been added.");
 				studentIDTextField.clear();
 				studentNameTextField.clear();
-				
 			}
-
+		} catch (SQLException e2) {
+			if (e2.getErrorCode() == primaryKeyViolation)
+				lblStatusStudent.setText("This studentID is already in use, please try another one");
+			System.out.println(e2.getMessage() + " SQL");
+			if (e2.getErrorCode() == dataBaseOffline)
+				lblStatusStudent.setText("The database is offline.");
 		} catch (NullPointerException e) {
-			// System.out.print(e.getMessage() + " An Error occurred");
+			lblStatusStudent.setText(e.getMessage() + " NullPointer");
+
+		} catch (Exception e1) {
+			lblStatusStudent.setText(e1.getMessage() + " Exception");
+
 		}
+
 	}
 
 	public void btnAddCourse_Click(ActionEvent event2) {
 		try {
 			String courseID = txtCourseID.getText();
 			String courseName = txtCourseName.getText();
+			String credits = txtCredits.getText();
 
 			if (txtCourseID.getText().isEmpty() && txtCourseName.getText().isEmpty()) {
-				lblStatusCourse.setText("You didn't set a Student ID and name");
+				lblStatusCourse.setText("You didn't set a Course ID and name");
 			} else if (txtCourseID.getText().isEmpty()) {
-				lblStatusCourse.setText("You didn't set students unique ID");
+				lblStatusCourse.setText("You didn't set course unique ID");
 			} else if (txtCourseName.getText().isEmpty()) {
-				lblStatusCourse.setText("You didn't set students name");
+				lblStatusCourse.setText("You didn't set course name");
 			} else if (!courseName.matches("[a-z A-Z]+")) {
 				System.out.print("Invalid name, please only use letters.");
+			} else if (!credits.matches("[0-9]+")) {
+				System.out.print("Invalid credit, please only use numbers.");
 			}
-			// if (!studentID.matches("[0-9]+")) {
-			// System.out.print("please only use numbers.");
-			// }
 
 			else {
 
 				courseName = courseName.substring(0, 1).toUpperCase() + courseName.substring(1);
 				courseID = courseID.substring(0, 1).toUpperCase() + courseID.substring(1);
-				try {
 
-					Connection con = DriverManager.getConnection(url, user, password);
-					String query = "INSERT INTO Course (courseID, courseName) VALUES(?,?);"
-							+ "SELECT * FROM Course WHERE courseID =?";
+				lblStatusStudent
+						.setText("Course " + dal.addCourse(courseID, courseName, credits) + " has been added.");
+				studentIDTextField.clear();
+				studentNameTextField.clear();
 
-					try (PreparedStatement ps = con.prepareStatement(query)) {
-
-						ps.setString(1, courseID);
-						ps.setString(2, courseName);
-						ps.setString(3, courseID);
-						ResultSet rs = ps.executeQuery();
-
-						while (rs.next()) {
-							lblStatusCourse.setText("Course: " + rs.getString(2) + " with course ID: "
-									+ rs.getString(1) + " has been added");
-						}
-					} catch (SQLException e1) {
-
-						System.out.println("Catch2 " + e1.getMessage());
-
-					}
-
-				} catch (SQLException e1) {
-
-					System.out.println("Catch2 " + e1.getMessage());
-
-				}
-				txtCourseID.clear();
-				txtCourseName.clear();
 			}
-
+		} catch (SQLException e2) {
+			if (e2.getErrorCode() == primaryKeyViolation)
+				lblStatusCourse.setText("This courseID is already in use, please try another one");
+			System.out.println(e2.getMessage() + " SQL");
+			if (e2.getErrorCode() == dataBaseOffline)
+				lblStatusStudent.setText("The database is offline.");
 		} catch (NullPointerException e) {
-			System.out.print(e.getMessage() + " An Error occurred");
+			lblStatusStudent.setText(e.getMessage() + " NullPointer");
+
+		} catch (Exception e1) {
+			lblStatusStudent.setText(e1.getMessage() + " Exception");
+
 		}
+
 	}
 
-	public void btnFindStudent_Click(ActionEvent event1) {
+	public String btnFindStudent_Click(ActionEvent event1) {
 
 		txtResponses.clear();
 
-		try {
-			String studentID = studentIDTextField.getText();
+		String studentID = studentIDTextField.getText();
 
-			if (studentIDTextField.getText().equals("")) {
-				System.out.print("Please enter a studentID");
-			}
-
-			else {
-
-				try {
-					Connection con = DriverManager.getConnection(url, user, password);
-					String query = "SELECT * FROM Student WHERE StudentID = ?";
-					try (PreparedStatement ps = con.prepareStatement(query);) {
-
-						ps.setString(1, studentID);
-						ResultSet rs = ps.executeQuery();
-
-						while (rs.next()) {
-							txtResponses.setText(rs.getString(1) + " " + rs.getString(2));
-						}
-					} catch (SQLException e1) {
-
-						System.out.println("CatchFindStudent: " + e1.getMessage());
-
-					}
-
-				} catch (SQLException e1) {
-
-					System.out.println("CatchFindStudent: " + e1.getMessage());
-
-				}
-			}
-		} catch (NullPointerException e) {
-			System.out.print("An Error occurred");
+		if (studentIDTextField.getText().equals("")) {
+			System.out.print("Please enter a studentID");
 		}
+
+		else {
+
+			try {
+				txtResponses.setText(dal.findStudent(studentID));
+
+			} catch (SQLException e2) {
+				if (e2.getErrorCode() == dataBaseOffline)
+					lblStatusStudent.setText("The database is offline.");
+			} catch (NullPointerException e) {
+				System.out.println("Catch1 " + e.getMessage());
+			} catch (Exception e1) {
+				lblStatusStudent.setText(e1.getMessage() + " Exception");
+			}
+
+		}
+		return null;
 	}
 
-	public void btnFindCourse_Click(ActionEvent event3) {
+	public String btnFindCourse_Click(ActionEvent event3) {
 
 		txtResponses.clear();
 
-		try {
-			String courseID = txtCourseID.getText();
+		String courseID = txtCourseID.getText();
 
-			if (txtCourseID.getText().equals("")) {
-				System.out.print("Please enter a courseID");
-			}
-
-			else {
-
-				try {
-					Connection con = DriverManager.getConnection(url, user, password);
-					String query = "SELECT * FROM HasStudied WHERE courseID = ?";
-					try (PreparedStatement ps = con.prepareStatement(query);) {
-
-						ps.setString(1, courseID);
-						ResultSet rs = ps.executeQuery();
-
-						while (rs.next()) {
-
-							String[] response = { rs.getString(1) + " " + rs.getString(2) + " " + rs.getString(3) };
-							for (String i : response) {
-								txtResponses.appendText(i + "\n");
-								System.out.println(i);
-							}
-
-						}
-					} catch (SQLException e1) {
-
-						System.out.println("CatchFindCourse: " + e1.getMessage());
-
-					}
-
-				} catch (SQLException e1) {
-
-					System.out.println("CatchFindCourse: " + e1.getMessage());
-
-				}
-
-			}
-		} catch (NullPointerException e) {
-			System.out.print("An Error occurred");
+		if (txtCourseID.getText().equals("")) {
+			System.out.print("Please enter a courseID");
 		}
+
+		else {
+
+			try {
+				txtResponses.setText("CourseID: " + dal.findCourse(courseID) + " credits.");
+
+			}
+
+			catch (SQLException e2) {
+				if (e2.getErrorCode() == dataBaseOffline)
+					lblStatusStudent.setText("The database is offline.");
+			} catch (NullPointerException e) {
+				System.out.println("Catch1 " + e.getMessage());
+			} catch (Exception e1) {
+				lblStatusStudent.setText(e1.getMessage() + " Exception");
+			}
+		}
+		return null;
+	}
+
+	public void btnFindStudentsOnCourse_Click(ActionEvent event8) throws SQLException {
+
+		String courseID = txtCourseID.getText();
+
+		try {
+			// System.out.println(dal.findStudentsOnCourse(courseID));
+
+			String[] SOC = dal.findStudentsOnCourse(courseID).toArray(new String[0]);
+			txtResponses.clear();
+			for (int i = 0; i < SOC.length; i += 3) {
+				String[] hasStudiedRow = new String[3];
+				hasStudiedRow[0] = SOC[i];
+				hasStudiedRow[1] = SOC[i + 1];
+				hasStudiedRow[2] = SOC[i + 2];
+
+				txtResponses.appendText(hasStudiedRow[0] + " " + hasStudiedRow[1] + " " + hasStudiedRow[2] + "\n");
+
+			}
+		}
+
+		catch (SQLException e2) {
+			if (e2.getErrorCode() == dataBaseOffline)
+				lblStatusStudent.setText("The database is offline.");
+		} catch (NullPointerException e) {
+			System.out.println("Catch1 " + e.getMessage());
+		} catch (Exception e1) {
+			lblStatusStudent.setText(e1.getMessage() + " Exception");
+		}
+
 	}
 
 	public void btnAddStudentToCourse_Click(ActionEvent event4) {
@@ -294,46 +278,22 @@ public class ApplicationController {
 			else {
 				courseID = courseID.substring(0, 1).toUpperCase() + courseID.substring(1);
 				studentID = studentID.substring(0, 1).toUpperCase() + studentID.substring(1);
+				txtResponses.setText(dal.addStudies(courseID, studentID));
 
-				try {
-
-					Connection con = DriverManager.getConnection(url, user, password);
-					String query = "INSERT INTO Studies (courseID, studentID) VALUES(?,?);"
-							+ "SELECT * FROM Studies WHERE courseID = ? AND studentID = ?";
-
-					try (PreparedStatement ps = con.prepareStatement(query)) {
-
-						ps.setString(1, courseID);
-						ps.setString(2, studentID);
-						ps.setString(3, courseID);
-						ps.setString(4, studentID);
-						ResultSet rs = ps.executeQuery();
-
-						while (rs.next()) {
-							lblStatusStudent.setText("Course-ID: " + rs.getString(1) + " with Student-ID: "
-									+ rs.getString(2) + " has been added");
-						}
-					} catch (SQLException e1) {
-
-						System.out.println("Catch2 " + e1.getMessage());
-
-					}
-
-				} catch (SQLException e1) {
-
-					System.out.println("Catch2 " + e1.getMessage());
-
-				}
-
-				lblStatusStudent
-						.setText("Course-ID: " + courseID + " with studentID: " + studentID + " has been added");
-				txtCourseID.clear();
-				txtCourseName.clear();
 			}
 
+			lblStatusStudent.setText("Course-ID: " + courseID + " with studentID: " + studentID + " has been added");
+			txtCourseID.clear();
+			txtCourseName.clear();
+		} catch (SQLException e2) {
+			if (e2.getErrorCode() == dataBaseOffline)
+				lblStatusStudent.setText("The database is offline.");
 		} catch (NullPointerException e) {
-			System.out.print(e.getMessage() + " An Error occurred");
+			System.out.println("Catch1 " + e.getMessage());
+		} catch (Exception e1) {
+			lblStatusStudent.setText(e1.getMessage() + " Exception");
 		}
+
 	}
 
 	public void btnAddGrade_Click(ActionEvent event5) {
@@ -359,51 +319,25 @@ public class ApplicationController {
 			else {
 				courseID = courseID.substring(0, 1).toUpperCase() + courseID.substring(1);
 				studentID = studentID.substring(0, 1).toUpperCase() + studentID.substring(1);
-				grade = grade.substring(0, 1).toUpperCase() + grade.substring(1);
-
-				try {
-
-					Connection con = DriverManager.getConnection(url, user, password);
-					String query = "INSERT INTO HasStudied (courseID, studentID, grade) VALUES(?,?,?);"
-							+ "SELECT * FROM HasStudied WHERE courseID = ? AND studentID = ?";
-
-					try (PreparedStatement ps = con.prepareStatement(query)) {
-
-						ps.setString(1, courseID);
-						ps.setString(2, studentID);
-						ps.setString(3, grade);
-						ps.setString(4, courseID);
-						ps.setString(5, studentID);
-						ResultSet rs = ps.executeQuery();
-
-						while (rs.next()) {
-							lblStatusStudent.setText("Course-ID: " + rs.getString(1) + " with Student-ID: "
-									+ rs.getString(2) + " has been given grade " + rs.getString(3));
-						}
-					} catch (SQLException e1) {
-
-						System.out.println("Catch2 " + e1.getMessage());
-
-					}
-
-				} catch (SQLException e1) {
-
-					System.out.println("Catch2 " + e1.getMessage());
-
-				}
-
-				lblStatusStudent.setText(
-						"Course-ID: " + courseID + " with studentID: " + studentID + " has been given grade " + grade);
-				txtCourseID.clear();
-				txtCourseName.clear();
-				txtGrade.clear();
+				txtResponses.setText(dal.addGrade(courseID, studentID, grade));
 			}
-
-		} catch (NullPointerException e) {
-			System.out.print(e.getMessage() + " An Error occurred");
 		}
+
+		catch (SQLException e2) {
+			if (e2.getErrorCode() == dataBaseOffline)
+				lblStatusStudent.setText("The database is offline.");
+		} catch (NullPointerException e) {
+			System.out.println("Catch1 " + e.getMessage());
+		} catch (Exception e1) {
+			lblStatusStudent.setText(e1.getMessage() + " Exception");
+		}
+
+		txtCourseID.clear();
+		txtCourseName.clear();
+		txtGrade.clear();
+
 	}
-	
+
 	public void btnFindStudentCourse_Click(ActionEvent event3) {
 
 		txtResponses.clear();
@@ -411,47 +345,122 @@ public class ApplicationController {
 		try {
 			String courseID = txtCourseID.getText();
 			String studentID = studentIDTextField.getText();
-			
+
 			if (txtCourseID.getText().equals("") && studentIDTextField.getText().contentEquals("")) {
 				System.out.print("Please enter a courseID and studentID");
 			}
 
 			else {
 
-				try {
-					Connection con = DriverManager.getConnection(url, user, password);
-					String query = "SELECT * FROM HasStudied h, Student s, Course c WHERE h.studentID = s.studentID AND h.courseID = c.courseID AND h.courseID = ? AND h.studentID = ?";
-					try (PreparedStatement ps = con.prepareStatement(query);) {
-
-						ps.setString(1, courseID);
-						ps.setString(2,  studentID);
-						ResultSet rs = ps.executeQuery();
-
-						while (rs.next()) {
-
-							String[] response = { "Student " + rs.getString(5) + " got grade " + " '" + rs.getString(3) + "' " + " on course " + rs.getString(7) };
-							for (String i : response) {
-								txtResponses.appendText(i + "\n");
-								System.out.println(i);
-							}
-
-						}
-					} catch (SQLException e1) {
-
-						System.out.println("CatchFindCourse: " + e1.getMessage());
-
-					}
-
-				} catch (SQLException e1) {
-
-					System.out.println("CatchFindCourse: " + e1.getMessage());
-
-				}
+				txtResponses.setText(dal.FindStudentCourse(courseID, studentID));
 
 			}
+		} catch (SQLException e2) {
+			if (e2.getErrorCode() == dataBaseOffline)
+				lblStatusStudent.setText("The database is offline.");
 		} catch (NullPointerException e) {
-			System.out.print("An Error occurred");
+			System.out.println("Catch1 " + e.getMessage());
+		} catch (Exception e1) {
+			lblStatusStudent.setText(e1.getMessage() + " Exception");
 		}
 	}
 
+	public void btnDeleteStudent_Click(ActionEvent Event4) {
+		txtResponses.clear();
+
+		try {
+
+			String studentID = studentIDTextField.getText();
+
+			if (studentIDTextField.getText().contentEquals("")) {
+				System.out.print("Please enter a studentID");
+			}
+
+			else {
+
+				dal.DeleteStudent(studentID);
+				
+			}
+		} catch (SQLException e1) {
+			if (e1.getErrorCode() == dataBaseOffline)
+				lblStatusStudent.setText("The database is offline.");
+		} catch (NullPointerException e) {
+			System.out.println("Catch1 " + e.getMessage());
+		} catch (Exception e2) {
+			lblStatusStudent.setText(e2.getMessage() + " Exception");
+		}
+
+	}
+
+	public void btnDeleteCourse_Click(ActionEvent Event5) {
+		txtResponses.clear();
+	
+		try	{
+		
+		String courseID = txtCourseID.getText();
+
+		if (txtCourseID.getText().contentEquals("")) {
+			System.out.print("Please enter a courseID");
+		} 
+		
+		else {
+			
+			dal.DeleteCourse(courseID);
+			
+			}
+			} catch (SQLException e1) {
+					if (e1.getErrorCode() == dataBaseOffline)
+						lblStatusStudent.setText("The database is offline.");
+			} catch (Exception e2) {
+					lblStatusStudent.setText(e2.getMessage() + " Exception");
+			} 
+	}	
+
+		
+	
+
+	public void btnDeleteStudentFromCourse_Click(ActionEvent Event6) {
+		txtResponses.clear();
+		
+		try	{
+		
+		String courseID = txtStudiesCourseID.getText();
+		String studentID = txtStudiesStudentID.getText();
+
+		if (txtStudiesCourseID.getText().equals("") && txtStudiesStudentID.getText().contentEquals("")) {
+			System.out.print("Please enter a courseID and studentID");
+		} else {
+			
+			txtResponses.setText(dal.DeleteStudentFromCourse(studentID, courseID));
+			
+			} 
+		} catch (SQLException e1) {
+				if (e1.getErrorCode() == dataBaseOffline)
+					lblStatusStudent.setText("The database is offline.");
+		} catch (Exception e2) {
+				lblStatusStudent.setText(e2.getMessage() + " Exception");
+		}
+				
+	}
+	
+
+	public void btnCountPercentA_Click(ActionEvent event7) {
+
+		txtResponses.clear();
+
+		try {
+			String courseID = txtCourseID.getText();
+
+			if (txtCourseID.getText().equals("")) {
+				System.out.print("Please enter a courseID");
+			}
+
+			else {
+
+				txtResponses.setText(dal.CountPercentA(courseID));
+						
+	}	} catch (SQLException e1) {
+		if (e1.getErrorCode() == dataBaseOffline)
+			lblStatusStudent.setText("The database is offline.");
+}	}
 }
